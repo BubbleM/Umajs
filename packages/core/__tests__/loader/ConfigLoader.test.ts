@@ -1,22 +1,23 @@
-import * as path from 'path';
-import ConfigLoader from '../../src/loader/ConfigLoader';
+import { test, assertEquals } from '../../../node-to-deno/test.ts';
+import path from '../../../node-to-deno/path.ts';
+import ConfigLoader from '../../src/loader/ConfigLoader.ts';
+import { __ } from '../../../node-to-deno/dirname.ts';
 
-describe('test/loader/ConfigLoader.test.ts', () => {
-    const basePath = path.join(__dirname, '../__fixtures__/loader/config');
+test({
+    name: 'loadConfigDir(dirPath: string)：load config dir',
+    async fn(){
+        const basePath = path.join(__(import.meta).__dirname, '../__fixtures__/loader/config');
 
-    describe('loadConfigDir(dirPath: string)', () => {
-        it ('load config dir', () => {
-            ConfigLoader.loadConfigDir(basePath);
+        await ConfigLoader.loadConfigDir(basePath);
 
-            expect(JSON.stringify(ConfigLoader.config)).toBe(JSON.stringify({
-                plugin: {},
-                default: {
-                    name: 'defaultConfig',
-                },
-                online: {
-                    name: 'onlineConfig',
-                },
-            }));
-        });
-    });
+        assertEquals(JSON.stringify(ConfigLoader.config), JSON.stringify({
+            plugin: {},
+            online: {
+                name: 'onlineConfig'
+            },
+            default: {
+                name: 'defaultConfig'
+            }
+        }));
+    },
 });

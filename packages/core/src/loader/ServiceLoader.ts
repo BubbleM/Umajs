@@ -1,9 +1,9 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from '../../../node-to-deno/fs.ts';
+import path from '../../../node-to-deno/path.ts';
 
-import Require from '../utils/Require';
-import loadDir from '../utils/loadDir';
-import { BaseService } from '../core/BaseService';
+import Require from '../utils/Require.ts';
+import loadDir from '../utils/loadDir.ts';
+import { BaseService } from '../core/BaseService.ts';
 
 export const ServiceMap: Map<string, Function> = new Map();
 
@@ -12,12 +12,12 @@ export default class ServiceLoader {
         return ServiceMap.get(serviceName);
     }
 
-    static loadService(filePath: string) {
+    static async loadService(filePath: string) {
         const fileInfo = path.parse(filePath);
         const [clazzName, type, ...suffix] = fileInfo.name.split('.');
 
-        if (suffix.length === 0 && type === 'service') {
-            const clazz: Function = Require.default(filePath);
+        if (suffix.length === 1 && type === 'service') {
+            const clazz: Function = await Require.default(filePath);
 
             if (clazz && clazz.prototype && clazz.prototype instanceof BaseService) {
                 ServiceMap.set(clazzName, clazz);

@@ -1,6 +1,6 @@
-import { TControllerInfo } from '@umajs/core';
+import { TControllerInfo } from '../../core/src/mod.ts';
 
-import { ClazzMap, RegexpRouterMap } from './router';
+import { ClazzMap, RegexpRouterMap } from './router.ts';
 
 /**
  * 正则类型的url匹配
@@ -8,14 +8,14 @@ import { ClazzMap, RegexpRouterMap } from './router';
  */
 export function MatchRegexp(reqPath: string) {
     for (const [reg, { name: clazzName, methodName, keys }] of RegexpRouterMap) {
-        const result = reg.exec(reqPath);
+        const result = reg.exec(reqPath.split('?')[0]);
 
         if (result) {
             // mixin keys and params
-            const params = {};
+            const params:any = {};
             const paramArr = result.slice(1);
 
-            keys.forEach((k, i) => {
+            keys?.forEach((k, i) => {
                 params[k.name] = paramArr[i];
             });
 
@@ -33,7 +33,7 @@ export function MatchRegexp(reqPath: string) {
  * @param methodName method
  * @param methodType type
  */
-export function getClazzInfo(clazzName: string, methodName: string, methodType: string): TControllerInfo {
+export function getClazzInfo(clazzName: string, methodName: string, methodType: string): TControllerInfo | null {
     const clazzInfo = ClazzMap.get(clazzName);
 
     if (!clazzInfo) return null;

@@ -1,7 +1,7 @@
-import { IContext } from './IContext';
+import { IContext } from './IContext.ts';
 
 export type TArg = {
-    argKey: string,
-    argIndex: number,
+    argKey: string | undefined,
+    argIndex: number | undefined,
     argDecorator?: (data: string, ctx: IContext) => any,
 }

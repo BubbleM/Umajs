@@ -1,16 +1,16 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as compose from 'koa-compose';
+import fs from '../../../node-to-deno/fs.ts';
+import path from '../../../node-to-deno/path.ts';
+// import * as compose from 'koa-compose';
 
-import Uma from '../core/Uma';
-import mixin from '../utils/mixin';
-import typeHelper from '../utils/typeHelper';
-import Require from '../utils/Require';
+import Uma from '../core/Uma.ts';
+import mixin from '../utils/mixin.ts';
+import typeHelper from '../utils/typeHelper.ts';
+import Require from '../utils/Require.ts';
 
-import { TPluginConfig } from '../types/TPluginConfig';
-import { TPlugin } from '../types/TPlugin';
-import { IContext } from '../types/IContext';
-import { Results } from '../extends/Results';
+import { TPluginConfig } from '../types/TPluginConfig.ts';
+import { TPlugin } from '../types/TPlugin.ts';
+import { IContext } from '../types/IContext.ts';
+import { Results } from '../extends/Results.ts';
 
 export default class PluginLoader {
     static loadPluginConfig() {
@@ -39,6 +39,7 @@ export default class PluginLoader {
         // 按照配置的顺序进行加载
         // for (const [key, val] of Object.entries(plugin)) {
         for (const key of Object.keys(plugin)) {
+            // @ts-ignore
             const val = plugin[key];
 
             if (key === 'request') {
@@ -56,25 +57,25 @@ export default class PluginLoader {
             } else if (key === 'filter') {
                 const { regexp = /.*/, handler } = val;
 
-                mws.push((ctx: IContext, next: Function) => (regexp.test(ctx.url) ? handler(ctx, next, options) : next()));
+                mws.push((ctx: IContext, next: Function) => (regexp.test(ctx.request.url) ? handler(ctx, next, options) : next()));
             } else if (key === 'ignore') {
                 const { regexp = /.*/, handler } = val;
 
-                mws.push((ctx: IContext, next: Function) => (!regexp.test(ctx.url) ? handler(ctx, next, options) : next()));
+                mws.push((ctx: IContext, next: Function) => (!regexp.test(ctx.request.url) ? handler(ctx, next, options) : next()));
             } else if (key === 'method') {
                 const { type, handler } = val;
 
-                mws.push((ctx: IContext, next: Function) => (type.indexOf(ctx.method) > -1 ? handler(ctx, next, options) : next()));
+                mws.push((ctx: IContext, next: Function) => (type.indexOf(ctx.request.method) > -1 ? handler(ctx, next, options) : next()));
             }
         }
 
-        if (mws.length > 0) uma.use(compose(mws));
+        // if (mws.length > 0) uma.use(compose(mws));
     }
 
     static async loadPLugin(pluginConfig: TPluginConfig) {
         const uma = Uma.instance();
-        const plugin: TPlugin | Function = Require.default(pluginConfig.path);
-        const options = mixin(true, {}, pluginConfig.options || {}, Uma.config[pluginConfig.name] || {});
+        const plugin: TPlugin | Function = await Require.default(pluginConfig.path!);
+        const options = mixin(true, {}, pluginConfig.options || {}, Uma.config[pluginConfig.name!] || {});
 
         // plugin.options & {plugin}.config
         pluginConfig.options = options;
@@ -98,7 +99,7 @@ export default class PluginLoader {
         // 尝试在以下目录找到匹配的插件
         //  -> {ROOT}/plugins
         //      -> {ROOT}/node_modules
-        const dirs = [
+        const dirs:string[] = [
             path.resolve(rootPath, './plugins'),
             path.resolve(rootPath, '../node_modules'),
         ];

@@ -1,5 +1,5 @@
-import ResourceLoader from '../loader/ResourceLoader';
-import typeHelper from '../utils/typeHelper';
+import ResourceLoader from '../loader/ResourceLoader.ts';
+import typeHelper from '../utils/typeHelper.ts';
 
 export const ResourceClazzMap: Map<Function, any[]> = new Map();
 

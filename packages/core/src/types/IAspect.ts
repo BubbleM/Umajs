@@ -1,7 +1,7 @@
-import Result from '../core/Result';
+import Result from '../core/Result.ts';
 
-import { IJoinPoint } from './IJoinPoint';
-import { IProceedJoinPoint } from './IProceedJoinPoint';
+import { IJoinPoint } from './IJoinPoint.ts';
+import { IProceedJoinPoint } from './IProceedJoinPoint.ts';
 
 export interface IAspect {
     before?(point: IJoinPoint): void;

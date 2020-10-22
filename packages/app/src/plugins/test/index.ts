@@ -1,4 +1,4 @@
-import { IContext, TPlugin, RequestMethod, Result as R } from "@umajs/core";
+import { IContext, TPlugin, RequestMethod, Result as R } from "../../../../core/src/mod.ts";
 
 export class Result extends R {
     static redirect2(url: string, status: number) {

@@ -5,28 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run cli",
-            "type": "node",
+            "type": "pwa-node",
             "request": "launch",
-            "program": "${workspaceRoot}/packages/cli/node_modules/ts-node/dist/bin.js",
-            "args": [
-                "src/index.ts",
-                "project",
-                "uma-demo"
-            ],
-            "cwd": "${workspaceRoot}/packages/cli",
-            "protocol": "inspector"
-        },
-        {
-            "name": "Run app",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceRoot}/packages/app/node_modules/ts-node/dist/bin.js",
-            "args": [
-                "src/app.ts"
-            ],
-            "cwd": "${workspaceRoot}/packages/app",
-            "protocol": "inspector"
+            "name": "Deno",
+            "runtimeExecutable": "deno",
+            "runtimeArgs": ["run", "--inspect-brk", "-A", "__tests__/loader/ConfigLoader.test.ts"],
+            "cwd": "${workspaceFolder}/packages/core",
+            "outputCapture": "std",
+            "attachSimplePort": 9229
         }
     ]
 }

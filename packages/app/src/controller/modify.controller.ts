@@ -1,4 +1,4 @@
-import { BaseController, Result, Path } from '@umajs/core';
+import { BaseController, Result, Path } from '../../../core/src/mod.ts';
 
 export default class Modify extends BaseController {
     @Path('/test')

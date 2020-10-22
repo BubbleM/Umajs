@@ -1,4 +1,4 @@
-import { TMethodInfo } from './TMethodInfo';
+import { TMethodInfo } from './TMethodInfo.ts';
 
 export type TControllerInfo = {
     name?: string // 文件名

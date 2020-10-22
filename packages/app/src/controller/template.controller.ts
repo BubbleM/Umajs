@@ -1,6 +1,6 @@
-import { BaseController, Path, Aspect, Query, Param } from '@umajs/core';
-import { AgeCheck } from '../decorator/AgeCheck';
-import { Result } from '../plugins/test/index';
+import { BaseController, Path, Aspect, Query, Param } from '../../../core/src/mod.ts';
+import { AgeCheck } from '../decorator/AgeCheck.ts';
+import { Result } from '../plugins/test/index.ts';
 
 @Path('/tpl')
 export default class Template extends BaseController {
@@ -29,6 +29,6 @@ export default class Template extends BaseController {
 
     @Path('/r')
     extendResult() {
-        return Result.redirect2('/', 301);
+        // return Result.redirect2('/', 301);
     }
 }

@@ -1,14 +1,21 @@
-import * as Koa from 'koa';
+import { Middleware } from '../../../node-to-deno/koa.ts';
 
-import AspectLoader from '../loader/AspectLoader';
+import AspectLoader from '../loader/AspectLoader.ts';
 
-import { ENotice } from '../types/ENotice';
-import { TMethodDecorator } from '../types/TDecorator';
-import { IJoinPoint } from '../types/IJoinPoint';
-import { IProceedJoinPoint } from '../types/IProceedJoinPoint';
-import Result from '../core/Result';
-import { IContext } from '../types/IContext';
-import { IAspect } from '../types/IAspect';
+import { ENotice } from '../types/ENotice.ts';
+import { TMethodDecorator } from '../types/TDecorator.ts';
+import { IJoinPoint } from '../types/IJoinPoint.ts';
+import { IProceedJoinPoint } from '../types/IProceedJoinPoint.ts';
+import Result from '../core/Result.ts';
+import { IContext } from '../types/IContext.ts';
+import { IAspect } from '../types/IAspect.ts';
+
+type TPropertyDescriptor = {
+    value?: any,
+    configurable?: any,
+    enumerable?: any,
+    writable?: boolean
+}
 
 /**
  * 将中间件转成切面 around 方法
@@ -20,7 +27,7 @@ import { IAspect } from '../types/IAspect';
  *      }
  * @param mw 中间件
  */
-export function middlewareToAround(mw: (Koa.Middleware<any, IContext>)) {
+export function middlewareToAround(mw: (Middleware<any, IContext>)) {
     return ({ target, proceed, args }: IProceedJoinPoint): Promise<Result> => new Promise((resolve, reject) => {
         mw(target.ctx, async () => {
             try {
@@ -46,17 +53,17 @@ export function aspectHelper(aspect: string | IAspect, notices: ENotice[]): TMet
         throw new Error(`Aspect ${aspect} not found.`);
     }
 
-    return function aspectDecorator(target: Function, methodName: string, desc: PropertyDescriptor): PropertyDescriptor {
+    return function aspectDecorator(target: Function, methodName: string, desc: TPropertyDescriptor): TPropertyDescriptor {
         if (!methodName) {
-            Reflect.ownKeys(target.prototype).forEach((method: string) => {
+            Reflect.ownKeys(target.prototype).forEach((method: any) => {
                 if (method === 'constructor') return;
 
-                const aopMethod = aspectDecorator(target, method, Reflect.getOwnPropertyDescriptor(target.prototype, method));
+                const aopMethod = aspectDecorator(target, method, <TPropertyDescriptor>Reflect.getOwnPropertyDescriptor(target.prototype, method));
 
                 Reflect.defineProperty(target.prototype, method, aopMethod);
             });
 
-            return;
+            // return;
         }
 
         const { value: method, configurable, enumerable } = desc;

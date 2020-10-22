@@ -1,7 +1,7 @@
-import { Result, TControllerInfo, IContext } from '@umajs/core';
+import { Result, TControllerInfo, IContext } from '../../core/src/mod.ts';
 
-import { TPathInfo } from './types/TPathInfo';
-import { MatchRegexp, getClazzInfo } from './helper';
+import { TPathInfo } from './types/TPathInfo.ts';
+import { MatchRegexp, getClazzInfo } from './helper.ts';
 
 export const StaticRouterMap: Map<String, TPathInfo> = new Map();
 export const RegexpRouterMap: Map<RegExp, TPathInfo> = new Map();
@@ -13,7 +13,7 @@ export const ClazzMap: Map<String, TControllerInfo> = new Map();
  * @param next
  */
 export default async function Router(ctx: IContext, next: Function) {
-    const { path: reqPath, method: methodType } = ctx.request;
+    const { url: reqPath, method: methodType } = ctx.request.serverRequest;
 
     // 先匹配静态路由(routerPath + methodPath)，地址和静态路由完全匹配时
     const staticResult = StaticRouterMap.get(reqPath);
@@ -21,7 +21,7 @@ export default async function Router(ctx: IContext, next: Function) {
     if (staticResult) {
         const { name: clazzName, methodName } = staticResult;
 
-        return await callMethod(clazzName, methodName, {}, ctx, next, methodType);
+        return await callMethod(clazzName ?? '', methodName ?? 'GET', {}, ctx, next, methodType);
     }
 
     // 静态路由没有匹配项后匹配正则路由(routerPath + methodPath)
@@ -30,7 +30,7 @@ export default async function Router(ctx: IContext, next: Function) {
     if (regexpResult) {
         const { clazzName, methodName, params = {} } = regexpResult;
 
-        return await callMethod(clazzName, methodName, params, ctx, next, methodType);
+        return await callMethod(clazzName ?? '', methodName ?? 'GET', params, ctx, next, methodType);
     }
 
     // 上面都没有走默认路由(controllerName + methodName)
@@ -43,7 +43,7 @@ export default async function Router(ctx: IContext, next: Function) {
     const [clazzName = 'index', methodName = 'index'] = pathArr;
 
     // 根据clazzName获取到当前controller信息
-    const routeInfo: TControllerInfo = ClazzMap.get(clazzName);
+    const routeInfo: TControllerInfo | undefined = ClazzMap.get(clazzName);
 
     // 未获取到，返回
     if (!routeInfo) return next();
@@ -54,7 +54,7 @@ export default async function Router(ctx: IContext, next: Function) {
     const methodInfo = methodMap.get(methodName);
 
     // if is not clazz method, return
-    if (!~Reflect.ownKeys(clazz.prototype).indexOf(methodName)) return next();
+    if (!~Reflect.ownKeys(clazz?.prototype).indexOf(methodName)) return next();
 
     // if is inside or has path decorator, return
     if (methodInfo && (methodInfo.inside || (methodInfo.path && methodInfo.path.length))) return next();
@@ -78,7 +78,7 @@ async function callMethod(clazzName: string, methodName: string, param: object, 
 
     const { clazz, methodMap = new Map() } = clazzInfo;
     const { args: argArr = [] } = methodMap.get(methodName) || {};
-    const instance = Reflect.construct(clazz, [ctx]);
+    const instance = Reflect.construct(clazz!, [ctx]);
     const method = Reflect.get(instance, methodName);
 
     if (typeof method !== 'function') return next(); // When Controller has been decorator by Service, Default route will be throw Error
@@ -86,6 +86,11 @@ async function callMethod(clazzName: string, methodName: string, param: object, 
     const args = [];
 
     ctx.param = param;
+    ctx.query = {};
+    for (const [key, value] of ctx.request.url.searchParams) {
+        ctx.query[key] = value;
+    }
+
     for (const { argKey, argIndex, argDecorator } of argArr) {
         const argVal = await Promise.resolve(argDecorator(argKey, ctx));
 

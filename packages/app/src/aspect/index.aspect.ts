@@ -1,6 +1,6 @@
-import { IAspect, IJoinPoint } from '@umajs/core';
+import { IAspect, IJoinPoint } from '../../../core/src/mod.ts';
 
-import IndexController from '../controller/index.controller';
+import IndexController from '../controller/index.controller.ts';
 
 export default class implements IAspect {
     before(point: IJoinPoint<IndexController>) {

@@ -1,4 +1,4 @@
-import { IAspect } from '../../../../src';
+import { IAspect } from '../../../../src/mod.ts';
 
 export default class implements IAspect {
     before() {

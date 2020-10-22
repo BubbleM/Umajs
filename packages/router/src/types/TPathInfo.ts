@@ -1,5 +1,5 @@
-import * as pathToRegexp from 'path-to-regexp';
-import { TMethodInfo } from '@umajs/core';
+import { Key } from '../../../node-to-deno/path-to-regexp.ts';
+import { TMethodInfo } from '../../../core/src/mod.ts';
 
 export type TPathInfo = {
     // 文件名
@@ -18,7 +18,7 @@ export type TPathInfo = {
     methodMap?: Map<string, TMethodInfo>;
 
     // methodPath匹配的param
-    keys?: pathToRegexp.Key[];
+    keys?: Key[];
 
     routePath?: string;
 };

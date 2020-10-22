@@ -1,4 +1,4 @@
-import { BaseService } from '@umajs/core';
+import { BaseService } from '../../../core/src/mod.ts';
 
 
 export default class test extends BaseService {

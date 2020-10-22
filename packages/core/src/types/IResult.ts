@@ -1,7 +1,6 @@
-import * as send from 'koa-send';
-
-import { IContext } from '../types/IContext';
-import { DOWNLOAD_PATH, VIEW_PATH, CALLBACK_FIELD } from '../info/UniqueKey';
+import { SendOptions, REDIRECT_BACK } from '../../../node-to-deno/koa.ts';
+import { IContext } from '../types/IContext.ts';
+import { DOWNLOAD_PATH, VIEW_PATH, CALLBACK_FIELD } from '../info/UniqueKey.ts';
 
 export type TResultJsonData = {
     [key: string]: any,
@@ -23,18 +22,19 @@ export type TResultStreamData = {
     data: any,
 }
 
-export interface TResultDownData extends send.SendOptions {
+export interface TResultDownData extends SendOptions {
     [DOWNLOAD_PATH]: string
 }
 
-export type TResultRedirectData = { url: string, alt?: string };
+// export type TResultRedirectData = { url: typeof REDIRECT_BACK, alt?: string };
+export type TResultRedirectData = { url: any, alt?: string };
 
 export interface IResults {
     done: (ctx: IContext, data: any) => void;
     send: (ctx: IContext, data: any) => void;
     json: (ctx: IContext, data: TResultJsonData) => void;
     jsonp: (ctx: IContext, data: TResultJsonpData) => void;
-    view: (ctx: IContext, data: TResultViewData) => void;
+    // view: (ctx: IContext, data: TResultViewData) => void;
     stream: (ctx: IContext, data: TResultStreamData) => void;
     download: (ctx: IContext, data: TResultDownData) => void;
     redirect: (ctx: IContext, data: TResultRedirectData) => void;

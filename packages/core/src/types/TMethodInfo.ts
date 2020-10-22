@@ -1,4 +1,4 @@
-import { TArg } from './TArg';
+import { TArg } from './TArg.ts';
 
 export type TMethodInfo = {
     name?: string; // 方法名

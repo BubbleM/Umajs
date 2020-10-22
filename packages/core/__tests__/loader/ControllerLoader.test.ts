@@ -1,20 +1,20 @@
-import * as assert from 'assert';
-import * as path from 'path';
-import ControllerLoader from '../../src/loader/ControllerLoader';
-import controllerInfo from '../../src/info/controllerInfo';
+import { test, assert } from '../../../node-to-deno/test.ts';
+import path from '../../../node-to-deno/path.ts';
+import ControllerLoader from '../../src/loader/ControllerLoader.ts';
+import controllerInfo from '../../src/info/controllerInfo.ts';
+import { __ } from '../../../node-to-deno/dirname.ts';
 
-describe('test/loader/ControllerLoader.test.ts', () => {
-    const basePath = path.join(__dirname, '../__fixtures__/loader/controller');
+test({
+    name: 'loadControllerDir(dirPath: string)：load controller dir',
+    async fn(){
+        const basePath = path.join(__(import.meta).__dirname, '../__fixtures__/loader/controller');
 
-    describe('loadControllerDir(dirPath: string)', () => {
-        it ('load controller dir', () => {
-            ControllerLoader.loadControllerDir(path.join(basePath));
+        await ControllerLoader.loadControllerDir(basePath);
 
-            const controllerValues = controllerInfo.getControllersInfo();
-            
-            const testController = controllerValues.next();
+        const controllerValues = controllerInfo.getControllersInfo();
+        
+        const testController = controllerValues.next();
 
-            assert(testController.value !== undefined);
-        });
-    });
+        assert(testController.value !== undefined);
+    }
 });

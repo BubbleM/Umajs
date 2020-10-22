@@ -1,8 +1,7 @@
-import * as pathToRegexp from 'path-to-regexp';
-import Uma, { TMethodInfo } from '@umajs/core';
-
-import { TPathInfo } from './types/TPathInfo';
-import router, { StaticRouterMap, RegexpRouterMap, ClazzMap } from './router';
+import { pathToRegexp, Key } from '../../node-to-deno/path-to-regexp.ts';
+import Uma, { TMethodInfo } from '../../core/src/mod.ts';
+import { TPathInfo } from './types/TPathInfo.ts';
+import router, { StaticRouterMap, RegexpRouterMap, ClazzMap } from './router.ts';
 
 export const Router = () => {
     console.log('======Init router start======');
@@ -18,11 +17,11 @@ export const Router = () => {
         const { name: clazzName, path: rootPath = '', clazz } = c;
         const methodMap: Map<string, TMethodInfo> = c.methodMap || new Map();
 
-        const decoratorMethodNameArr: string[] = [...methodMap.values()].map((m) => m.name);
-        const methodNameArr: (string | number | symbol)[] = Reflect.ownKeys(clazz.prototype)
+        const decoratorMethodNameArr: (string | undefined)[] = [...methodMap.values()].map((m) => m.name);
+        const methodNameArr: (string | number | symbol)[] = Reflect.ownKeys(clazz?.prototype)
             .filter((name) => name !== 'constructor'
             && !decoratorMethodNameArr.includes(String(name))
-            && typeof clazz.prototype[`${String(name)}`] === 'function');
+            && typeof clazz?.prototype[`${String(name)}`] === 'function');
 
         // 记录没有被修饰过的路由 默认路由 controller/method
         methodNameArr.forEach((methodName) => {
@@ -51,7 +50,7 @@ export const Router = () => {
 
                 // 如果method设置的Path中有:/(被认定为正则匹配路由，否则为静态路由
                 if (p.indexOf(':') > -1 || p.indexOf('(') > -1) {
-                    const keys: pathToRegexp.Key[] = [];
+                    const keys: Key[] = [];
                     const pathReg = pathToRegexp(routePath, keys);
 
                     RegexpRouterMap.set(pathReg, { ...pathInfo, keys, routePath });
@@ -62,7 +61,7 @@ export const Router = () => {
         }
 
         // 保存所有的clazz信息到ClazzMap中
-        ClazzMap.set(clazzName, c);
+        ClazzMap.set(clazzName!, c);
     }
 
     console.log('======Init router end======');

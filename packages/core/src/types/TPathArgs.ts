@@ -1,4 +1,4 @@
-import { RequestMethod } from './RequestMethod';
+import { RequestMethod } from './RequestMethod.ts';
 
 export type TPathObjArgs = {
     value?: string | string[],

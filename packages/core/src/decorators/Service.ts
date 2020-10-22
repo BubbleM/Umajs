@@ -1,6 +1,6 @@
-import { BaseController } from '../core/BaseController';
-import ServiceLoader from '../loader/ServiceLoader';
-import typeHelper from '../utils/typeHelper';
+import { BaseController } from '../core/BaseController.ts';
+import ServiceLoader from '../loader/ServiceLoader.ts';
+import typeHelper from '../utils/typeHelper.ts';
 
 /**
  * 注入 service

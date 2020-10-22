@@ -1,9 +1,7 @@
-import * as flat from 'array.prototype.flat';
-
-import typeHelper from '../utils/typeHelper';
-import controllerInfo from '../info/controllerInfo';
-import { TMethodDecoratorParams, TClassDecoratorParams } from '../types/TDecorator';
-import { TPathObjArgs } from '../types/TPathArgs';
+import typeHelper from '../utils/typeHelper.ts';
+import controllerInfo from '../info/controllerInfo.ts';
+import { TMethodDecoratorParams, TClassDecoratorParams } from '../types/TDecorator.ts';
+import { TPathObjArgs } from '../types/TPathArgs.ts';
 
 /**
  * 路由装饰器
@@ -35,9 +33,8 @@ export function Path(...args: [...string[]] | [TPathObjArgs]): Function {
             return controllerInfo.setControllersInfo(props[0], null, { rootPath: arg0 });
         }
 
-        const values = [];
-        const methodType = [];
-
+        let values:any = [];
+        let methodType:string[] = [];
         // when @Path decorate method
         // if config is object, only receive one Object as a parameter
         if (typeHelper.isObject(arg0)) {
@@ -47,8 +44,8 @@ export function Path(...args: [...string[]] | [TPathObjArgs]): Function {
 
             const { value = [], method = [] } = arg0;
 
-            values.push(...flat([value]));
-            methodType.push(...flat([method]));
+            values = [values, value].flat();
+            methodType = [methodType, method].flat();
         }
 
         // if config is string
@@ -58,13 +55,13 @@ export function Path(...args: [...string[]] | [TPathObjArgs]): Function {
 
         const [target, methodName] = props;
 
-        values.forEach((p) => {
+        values.forEach((p:any) => {
             if (!typeHelper.isString(p) || !p.startsWith('/')) throw new Error(`path must be string start with "/", now is "${p}"`);
 
             controllerInfo.setControllersInfo(target.constructor, methodName, { mpath: p });
         });
 
-        methodType.forEach((m) => {
+        methodType.forEach((m:string) => {
             controllerInfo.setControllersInfo(target.constructor, methodName, { methodType: m });
         });
     };

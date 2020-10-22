@@ -1,4 +1,4 @@
-import { BaseController } from '../../../../src/core/BaseController';
+import { BaseController } from '../../../../src/mod.ts';
 
 export default class Index extends BaseController {
     index() {

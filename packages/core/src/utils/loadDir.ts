@@ -1,25 +1,25 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from '../../../node-to-deno/fs.ts';
+import path from '../../../node-to-deno/path.ts';
 
 /**
  * 加载目录
  * @param dirPath 文件夹地址
  * @param checkFn 加载方法
  */
-export default function loadDir(dirPath: string, loadFn: (filePath: string) => void, ignoreDirs: string[] = []) {
+export default async function loadDir(dirPath: string, loadFn: (filePath: string) => void, ignoreDirs: string[] = []) {
     if (!fs.existsSync(dirPath)) return;
 
     const files = fs.readdirSync(dirPath);
 
     for (const file of files) {
-        const filePath = path.resolve(dirPath, file);
+        const filePath = path.resolve(dirPath, file.name);
 
-        if (fs.statSync(filePath).isDirectory()) {
-            if (ignoreDirs.indexOf(file) === -1) {
-                loadDir(filePath, loadFn);
+        if (file.isDirectory) {
+            if(ignoreDirs.indexOf(file.name) === -1) {
+                await loadDir(filePath, loadFn);
             }
         } else {
-            loadFn(filePath);
+            await Promise.resolve(loadFn(filePath));
         }
     }
 }

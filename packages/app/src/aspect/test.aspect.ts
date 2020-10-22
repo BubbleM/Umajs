@@ -1,4 +1,4 @@
-import { IAspect, IJoinPoint } from '@umajs/core';
+import { IAspect, IJoinPoint } from '../../../core/src/mod.ts';
 
 export default class implements IAspect {
     before() {
@@ -7,6 +7,7 @@ export default class implements IAspect {
     after() {
         console.log('test: this is after');
     }
+    // @ts-ignore
     async around({ proceed }) {
         console.log('test: this is around before');
         const result = await proceed();

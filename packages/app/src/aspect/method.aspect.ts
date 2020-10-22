@@ -1,4 +1,4 @@
-import { IAspect, IJoinPoint, IProceedJoinPoint, Result } from '@umajs/core';
+import { IAspect, IJoinPoint, IProceedJoinPoint, Result } from '../../../core/src/mod.ts';
 
 export default class implements IAspect {
     before() {

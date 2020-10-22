@@ -1,4 +1,4 @@
-import { BaseController, Path, Private, Param, Query, RequestMethod, Result } from '@umajs/core';
+import { BaseController, Path, Private, Param, Query, RequestMethod, Result } from '../../../../../core/src/mod.ts';
 
 export default class Index extends BaseController {
     index() {

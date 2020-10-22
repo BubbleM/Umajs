@@ -1,4 +1,4 @@
-import { IContext } from '@umajs/core';
+import { IContext } from '../../../core/src/mod.ts';
 
 export default {
     _404(ctx: IContext) {

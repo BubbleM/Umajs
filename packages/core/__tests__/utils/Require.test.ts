@@ -1,33 +1,41 @@
-import * as assert from 'assert';
-import * as path from 'path';
-import Require from '../../src/utils/Require';
+import { test, assert } from '../../../node-to-deno/test.ts';
+import path from '../../../node-to-deno/path.ts';
+import Require from '../../src/utils/Require.ts';
 
-describe('test/utils/Require.test.ts', () => {
-    describe('default(p: string): any', () => {
-        const baseDir = path.join(__dirname, '../__fixtures__/requireDefault');
+const baseDir = path.join(Deno.cwd(), '__tests__/__fixtures__/requireDefault');
 
-        it('should return default obj', () => {
-            const loadObj = Require.default(path.join(baseDir, 'Object.ts'));
+test({
+    name: 'default(p: string): any：should return default obj',
+    async fn(){
+        const loadObj = await Require.default(path.join(baseDir, 'Object.ts'));
 
-            assert(loadObj.a === 1);
-        });
+        assert(loadObj.a === 1);
+    }
+});
 
-        it('should return default function', () => {
-            const loadFunc = Require.default(path.join(baseDir, 'Function.ts'));
+test({
+    name: 'default(p: string): any：should return default function',
+    async fn(){
+        const loadFunc = await Require.default(path.join(baseDir, 'Function.ts'));
 
-            assert(loadFunc() === 'abc');
-        });
+        assert(loadFunc() === 'abc');
+    }
+});
 
-        it('should return default module', () => {
-            const loadModule = Require.default(path.join(baseDir, 'Module.ts'));
+test({
+    name: 'default(p: string): any：should return default module',
+    async fn(){
+        const loadModule = await Require.default(path.join(baseDir, 'Module.ts'));
 
-            assert(loadModule.a === 1);
-        });
+        assert(loadModule.a === 1);
+    }
+});
 
-        it('load file with not default', () => {
-            const loadNodefault = Require.default(path.join(baseDir, 'Nodefault.ts'));
+test({
+    name: 'default(p: string): any：load file with not default',
+    async fn(){
+        const loadNodefault = await Require.default(path.join(baseDir, 'Nodefault.ts'));
 
-            assert(loadNodefault.a === 1);
-        });
-    });
+        assert(loadNodefault.a === 1);
+    }
 });

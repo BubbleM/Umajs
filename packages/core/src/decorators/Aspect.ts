@@ -1,6 +1,6 @@
-import { aspectHelper } from '../utils/aspectHelper';
-import { ENotice } from '../types/ENotice';
-import { IAspect } from '../types/IAspect';
+import { aspectHelper } from '../utils/aspectHelper.ts';
+import { ENotice } from '../types/ENotice.ts';
+import { IAspect } from '../types/IAspect.ts';
 
 /**
  * @aspectHelper('aspect')

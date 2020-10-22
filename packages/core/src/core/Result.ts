@@ -1,10 +1,9 @@
-import * as stream from 'stream';
-import * as send from 'koa-send';
+// import * as send from 'koa-send';
 
-import { CALLBACK_FIELD, VIEW_PATH, DOWNLOAD_PATH } from '../info/UniqueKey';
-import { Results } from '../extends/Results';
-import { IResult, TResultType } from '../types/IResult';
-import { IContext } from '../types/IContext';
+import { CALLBACK_FIELD, VIEW_PATH, DOWNLOAD_PATH } from '../info/UniqueKey.ts';
+import { Results } from '../extends/Results.ts';
+import { IResult, TResultType } from '../types/IResult.ts';
+import { IContext } from '../types/IContext.ts';
 
 export default class Result implements IResult {
     constructor({ type, data, status }: IResult) {
@@ -17,7 +16,7 @@ export default class Result implements IResult {
 
     data: any;
 
-    status: number;
+    status: number | undefined;
 
     static done() {
         return new Result({
@@ -25,7 +24,7 @@ export default class Result implements IResult {
         });
     }
 
-    static send(data: string | Buffer, status?: number) {
+    static send(data: string | Deno.Buffer, status?: number) {
         return new Result({
             type: 'send',
             data,
@@ -50,17 +49,17 @@ export default class Result implements IResult {
         });
     }
 
-    static view(viewPath: string, locals: { [key: string]: any } = {}) {
-        return new Result({
-            type: 'view',
-            data: {
-                ...locals,
-                [VIEW_PATH]: viewPath,
-            },
-        });
-    }
+    // static view(viewPath: string, locals: { [key: string]: any } = {}) {
+    //     return new Result({
+    //         type: 'view',
+    //         data: {
+    //             ...locals,
+    //             [VIEW_PATH]: viewPath,
+    //         },
+    //     });
+    // }
 
-    static stream(data: stream.Readable, fileName?: string) {
+    static stream(data: ReadableStream, fileName?: string) {
         return new Result({
             type: 'stream',
             data: {
@@ -70,7 +69,7 @@ export default class Result implements IResult {
         });
     }
 
-    static download(filePath: string, opts?: send.SendOptions) {
+    static download(filePath: string, opts?: any) {
         return new Result({
             type: 'download',
             data: {
@@ -93,7 +92,7 @@ export default class Result implements IResult {
     static finish(ctx: IContext, result: Result) {
         const { type, status, data } = result;
 
-        if (status) ctx.status = status;
+        if (status) ctx.response.status = status;
 
         return Reflect.get(Results, type)(ctx, data);
     }

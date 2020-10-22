@@ -1,5 +1,5 @@
-import { IContext } from './IContext';
-import { RequestMethod } from './RequestMethod';
+import { IContext } from './IContext.ts';
+import { RequestMethod } from './RequestMethod.ts';
 
 export type TPlugin = {
     use?: {

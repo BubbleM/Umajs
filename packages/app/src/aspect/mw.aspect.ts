@@ -1,6 +1,4 @@
-import { IAspect, middlewareToAround } from '@umajs/core';
-
-
+import { IAspect, middlewareToAround } from '../../../core/src/mod.ts';
 
 export default class implements IAspect {
     // async around({ target, proceed, args }) {

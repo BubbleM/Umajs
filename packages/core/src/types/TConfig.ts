@@ -1,6 +1,6 @@
-import { TPluginConfig } from './TPluginConfig';
+import { TPluginConfig } from './TPluginConfig.ts';
 
 export type TConfig = {
-    plugin?: { [pluginName: string]: boolean | TPluginConfig };
+    plugin: { [pluginName: string]: boolean | TPluginConfig };
     [key: string]: any;
 }

@@ -1,5 +1,5 @@
-import { Inject, BaseService } from '@umajs/core';
-import User from '../model/User';
+import { Inject, BaseService } from '../../../core/src/mod.ts';
+import User from '../model/User.ts';
 
 export default class extends BaseService {
 

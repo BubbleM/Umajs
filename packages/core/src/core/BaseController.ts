@@ -1,7 +1,7 @@
-import Result from './Result';
-import { IContext, BaseContext } from '../types/IContext';
-import { IRequest } from '../types/IRequest';
-import { IResponse } from '../types/IResponse';
+import Result from './Result.ts';
+import { IContext, BaseContext } from '../types/IContext.ts';
+import { IRequest } from '../types/IRequest.ts';
+import { IResponse } from '../types/IResponse.ts';
 
 /**
  * controller 自带方法在 ctx 中也有相同实现
@@ -12,23 +12,29 @@ export class BaseController implements BaseContext {
 
         this.req = req;
         this.res = res;
+        this.request = req;
+        this.response = res;
     }
 
-    req: IRequest;
+    req!: IRequest;
 
-    res: IResponse;
+    res!: IResponse;
+
+    request!: IRequest;
+
+    response!: IResponse;
 
     set status(status: number) {
-        this.ctx.status = status;
+        this.ctx.response.status = status;
     }
 
-    send = Result.send;
+    sendData = Result.send;
 
     json = Result.json;
 
     jsonp = Result.jsonp;
 
-    view = async (viewPath: string, locals: { [key: string]: any } = {}) => Result.view(viewPath, locals);
+    // view = async (viewPath: string, locals: { [key: string]: any } = {}) => Result.view(viewPath, locals);
 
     stream = Result.stream
 
@@ -36,9 +42,9 @@ export class BaseController implements BaseContext {
 
     redirect = Result.redirect
 
-    get userAgent() {
-        return this.ctx.header['user-agent'];
-    }
+    // get userAgent() {
+    //     return this.ctx.request.headers.get('user-agent');
+    // }
 
     get param() {
         return this.ctx.param;

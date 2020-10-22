@@ -1,4 +1,4 @@
-import controllerInfo from '../info/controllerInfo';
+import controllerInfo from '../info/controllerInfo.ts';
 
 /**
  * 将 method 声明不匹配默认路由

@@ -1,10 +1,10 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { BaseController, Path, Private, Param, Query, RequestMethod, Aspect, Service, Result } from '@umajs/core';
+import fs from '../../../node-to-deno/fs.ts';
+import path from '../../../node-to-deno/path.ts';
+import { BaseController, Path, Private, Param, Query, RequestMethod, Aspect, Service, Result } from '../../../core/src/mod.ts';
 
-import TestService from '../service/test.service';
-import { AgeCheck } from '../decorator/AgeCheck';
-import UserService from '../service/user.service';
+import TestService from '../service/test.service.ts';
+import { AgeCheck } from '../decorator/AgeCheck.ts';
+import UserService from '../service/user.service.ts';
 
 export default class Index extends BaseController {
 
@@ -17,19 +17,19 @@ export default class Index extends BaseController {
     index() {
         console.log(this.userService.getDefaultUserAge());
 
-        console.log('\n\n', this.ctx.i18n.hi);
+        // console.log('\n\n', this.ctx.i18n.hi);
 
-        this.ctx.setLocale('en-us');
+        // this.ctx.setLocale('en-us');
 
-        console.log(this.ctx.i18n.hi);
+        // console.log(this.ctx.i18n.hi);
 
-        this.ctx.setLocale('zh-cn');
+        // this.ctx.setLocale('zh-cn');
 
-        console.log(this.ctx.i18n.hi);
+        // console.log(this.ctx.i18n.hi);
 
-        return this.view('index.html', {
-            frameName: this.testService.returnFrameName(),
-        });
+        // return this.view('index.html', {
+        //     frameName: this.testService.returnFrameName(),
+        // });
     }
 
     @Path('/reg/:name*')
@@ -59,23 +59,23 @@ export default class Index extends BaseController {
         return Result.send('this is static router');
     }
 
-    @Path('/cookie')
-    cookie() {
-        this.ctx.cookies.set('hehe', 'cookie set done');
+    // @Path('/cookie')
+    // cookie() {
+    //     this.ctx.cookies.set('hehe', 'cookie set done');
 
-        return Result.send(this.ctx.cookies.get('hehe'));
-    }
+    //     return Result.send(this.ctx.cookies.get('hehe'));
+    // }
 
     @Private
     inline() {
         return Result.send('this is private router');
     }
 
-    @Path('/ss')
-    ss() {
-        this.ctx.session.set('haha', 'Hello World');
-        return Result.send(this.ctx.session.get('haha'));
-    }
+    // @Path('/ss')
+    // ss() {
+    //     this.ctx.session.set('haha', 'Hello World');
+    //     return Result.send(this.ctx.session.get('haha'));
+    // }
 
     @Path({
         method: RequestMethod.POST
@@ -89,14 +89,14 @@ export default class Index extends BaseController {
         return Result.send(`name=${name}, title=${title}`);
     }
 
-    @Path('/download')
-    downFile() {
-        return Result.download('/src/controller/template.controller.ts');
-    }
+    // @Path('/download')
+    // downFile() {
+    //     return Result.download('/src/controller/template.controller.ts');
+    // }
 
-    @Path('/stream')
-    donwStream() {
-        const rs = fs.createReadStream(path.resolve(__dirname, './template.controller.ts'));
-        return Result.stream(rs, 'controller.ts');
-    }
+    // @Path('/stream')
+    // donwStream() {
+    //     const rs = fs.createReadStream(path.resolve(Deno.cwd(), './template.controller.ts'));
+    //     return Result.stream(rs, 'controller.ts');
+    // }
 }

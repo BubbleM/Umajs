@@ -1,19 +1,19 @@
-import Require from '../utils/Require';
+import Require from '../utils/Require.ts';
 
 export default class LazyModules {
-    static requireCatch(pName: string) {
+    static async requireCatch(pName: string) {
         try {
-            return Require.default(pName);
+            return await Require.default(pName);
         } catch (err) {
             throw new Error(`Before you use ${pName}, please run "npm i -S ${pName}"\n`);
         }
     }
 
-    static get jsonpBody() {
-        return LazyModules.requireCatch('jsonp-body');
+    static async jsonpBody() {
+        return await LazyModules.requireCatch('jsonp-body');
     }
 
-    static get send() {
-        return LazyModules.requireCatch('koa-send');
+    static async send() {
+        return await LazyModules.requireCatch('koa-send');
     }
 }

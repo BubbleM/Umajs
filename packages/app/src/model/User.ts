@@ -1,4 +1,4 @@
-import { Resource } from '@umajs/core';
+import { Resource } from '../../../core/src/mod.ts';
 
 @Resource('Uma', 18)
 export default class User {

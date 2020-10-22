@@ -1,4 +1,4 @@
-import typeHelper from './typeHelper';
+import typeHelper from './typeHelper.ts';
 
 /**
  * 混入目标，暂不考虑 Map & Set
@@ -14,7 +14,7 @@ export default function mixin(deep: boolean = false, target: any, ...sources: an
         const keys = Reflect.ownKeys(source);
 
         for (const key of keys) {
-            const descriptor = Reflect.getOwnPropertyDescriptor(source, key);
+            const descriptor:any = Reflect.getOwnPropertyDescriptor(source, key);
             const { get, set, value } = descriptor;
 
             if (get || set) {

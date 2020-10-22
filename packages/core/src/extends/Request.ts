@@ -1,4 +1,4 @@
-import { BaseRequest } from '../types/IRequest';
+import { BaseRequest } from '../types/IRequest.ts';
 
 export const Request: BaseRequest = {
 };

@@ -1,3 +1,3 @@
-import { BaseResponse } from '../types/IResponse';
+import { BaseResponse } from '../types/IResponse.ts';
 
 export const Response: BaseResponse = {};

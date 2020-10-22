@@ -1,4 +1,4 @@
-import { BaseController, Path, Private, Result } from '@umajs/core';
+import { BaseController, Path, Private, Result } from '../../../../../core/src/mod.ts';
 
 @Path('/tpl')
 export default class Template extends BaseController {
