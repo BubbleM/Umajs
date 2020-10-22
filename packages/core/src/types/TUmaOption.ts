@@ -8,7 +8,7 @@ import Uma from '../core/Uma.ts';
 import { TJsonpBody } from './TJsonpBody.ts';
 
 export type TUmaOption = {
-    Router: () => Middleware,
+    Router: any,
     ROOT: string,
     env?: 'development' | 'production' | string,
     strictDir?: boolean,
