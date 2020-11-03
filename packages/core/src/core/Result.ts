@@ -1,5 +1,3 @@
-// import * as send from 'koa-send';
-
 import { CALLBACK_FIELD, VIEW_PATH, DOWNLOAD_PATH } from '../info/UniqueKey.ts';
 import { Results } from '../extends/Results.ts';
 import { IResult, TResultType } from '../types/IResult.ts';
@@ -49,15 +47,15 @@ export default class Result implements IResult {
         });
     }
 
-    // static view(viewPath: string, locals: { [key: string]: any } = {}) {
-    //     return new Result({
-    //         type: 'view',
-    //         data: {
-    //             ...locals,
-    //             [VIEW_PATH]: viewPath,
-    //         },
-    //     });
-    // }
+    static view(viewPath: string, locals: { [key: string]: any } = {}) {
+        return new Result({
+            type: 'view',
+            data: {
+                ...locals,
+                [VIEW_PATH]: viewPath,
+            },
+        });
+    }
 
     static stream(data: ReadableStream, fileName?: string) {
         return new Result({

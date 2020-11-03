@@ -7,27 +7,27 @@ export const Results: IResults = {
     done() {
     },
     send(ctx: IContext, data: any) {
-        return ctx.response.body = data;
+        return ctx.sendData(data);
     },
     json(ctx: IContext, data: TResultJsonData) {
-        return ctx.response.body = data;
+        return ctx.json(data);
     },
     jsonp(ctx: IContext, data: TResultJsonpData) {
         const { [CALLBACK_FIELD]: callbackField, ...jsonpData } = data;
 
         return ctx.jsonp(jsonpData, callbackField);
     },
-    // view(ctx: IContext, data: TResultViewData) {
-        // const { [VIEW_PATH]: viewPath, ...viewData } = data;
+    view(ctx: IContext, data: TResultViewData) {
+        const { [VIEW_PATH]: viewPath, ...viewData } = data;
 
-        // return ctx.view(viewPath, viewData);
-    // },
+        return ctx.view(viewPath, viewData);
+    },
     stream(ctx: IContext, data: TResultStreamData) {
         const { data: streamData, fileName } = data;
 
         // if (fileName) ctx.attachment(fileName);
 
-        ctx.response.body = streamData;
+        ctx.body = streamData;
     },
     async download(ctx: IContext, data: TResultDownData) {
         // const { [DOWNLOAD_PATH]: downloadPath, ...downloadOpts } = data;
@@ -39,6 +39,7 @@ export const Results: IResults = {
     redirect(ctx: IContext, data: TResultRedirectData) {
         const { url, alt } = data;
 
-        return ctx.response.redirect(url, alt);
+        // @ts-ignore
+        return ctx.redirect(url, alt);
     },
 };

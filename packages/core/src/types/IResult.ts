@@ -34,7 +34,7 @@ export interface IResults {
     send: (ctx: IContext, data: any) => void;
     json: (ctx: IContext, data: TResultJsonData) => void;
     jsonp: (ctx: IContext, data: TResultJsonpData) => void;
-    // view: (ctx: IContext, data: TResultViewData) => void;
+    view: (ctx: IContext, data: TResultViewData) => void;
     stream: (ctx: IContext, data: TResultStreamData) => void;
     download: (ctx: IContext, data: TResultDownData) => void;
     redirect: (ctx: IContext, data: TResultRedirectData) => void;

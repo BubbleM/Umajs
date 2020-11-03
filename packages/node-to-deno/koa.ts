@@ -8,6 +8,7 @@ import {
   Request,
   Response,
   REDIRECT_BACK,
+  send,
   SendOptions
 } from 'https://deno.land/x/oak/mod.ts';
 
@@ -25,5 +26,6 @@ export {
   Request,
   Response,
   REDIRECT_BACK,
+  send,
   SendOptions
 }

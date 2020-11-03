@@ -34,20 +34,24 @@ export class BaseController implements BaseContext {
 
     jsonp = Result.jsonp;
 
-    // view = async (viewPath: string, locals: { [key: string]: any } = {}) => Result.view(viewPath, locals);
+    view = async (viewPath: string, locals: { [key: string]: any } = {}) => Result.view(viewPath, locals);
 
     stream = Result.stream
 
     download = Result.download
 
-    redirect = Result.redirect
+    redirect:any = Result.redirect
 
-    // get userAgent() {
-    //     return this.ctx.request.headers.get('user-agent');
-    // }
+    get userAgent() {
+        return this.ctx?.headers?.get('user-agent');
+    }
 
     get param() {
         return this.ctx.param;
+    }
+
+    get query() {
+        return this.ctx.query;
     }
 
     setHeader(name: string | any, value: string | string[]): void {

@@ -25,6 +25,7 @@ import { TConfig } from '../types/TConfig.ts';
 import { TControllerInfo } from '../types/TControllerInfo.ts';
 import { TPluginConfig } from '../types/TPluginConfig.ts';
 import { ISUmaOption, IUmaOption } from '../types/IUmaOption.ts';
+import Delegator from '../../../node-to-deno/delegates.ts';
 
 let instance: Uma | null = null;
 
@@ -138,13 +139,25 @@ export default class Uma {
 
         const { app, options: { createServer, Router, beforeLoad, afterLoaded } } = this;
 
-        mixin(false, app.request, Request);
-        mixin(false, app.response, Response);
-        mixin(false, app.context, Context);
-
         if (typeHelper.isFunction(beforeLoad)) await Promise.resolve(Reflect.apply(beforeLoad, this, [this]));
 
         await this.load();
+
+        this.use((ctx: IContext, next: Function) => {
+            mixin(false, ctx.request, Request);
+            mixin(false, ctx.response, Response);
+            mixin(false, ctx, Context);
+
+            Delegator.create(ctx, ctx.response)
+                .method('redirect')
+                .access('status')
+                .access('body')
+                .access('type')
+            Delegator.create(ctx, ctx.request)
+                .getter('headers')
+                .getter('url')
+            return next();
+        });
 
         this.use(Router());
 

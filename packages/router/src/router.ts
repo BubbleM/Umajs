@@ -86,10 +86,6 @@ async function callMethod(clazzName: string, methodName: string, param: object, 
     const args = [];
 
     ctx.param = param;
-    ctx.query = {};
-    for (const [key, value] of ctx.request.url.searchParams) {
-        ctx.query[key] = value;
-    }
 
     for (const { argKey, argIndex, argDecorator } of argArr) {
         const argVal = await Promise.resolve(argDecorator(argKey, ctx));

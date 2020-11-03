@@ -4,12 +4,6 @@ import { IRequest } from './IRequest.ts';
 import { IResponse } from './IResponse.ts';
 
 export interface BaseContext {
-    req: IRequest;
-    res: IResponse;
-
-    request: IRequest;
-    response: IResponse;
-
     /**
      * 发送内容
      * @param data 内容
@@ -35,17 +29,22 @@ export interface BaseContext {
      * @param viewPath 模板地址
      * @param locals 变量
      */
-    // view(viewPath: string, locals?: any): Promise<any>;
+    view(viewPath: string, locals?: any): Promise<any>;
 
     /**
      * userAgent
      */
-    // userAgent: string;
+    userAgent: string | any;
 
     /**
      * 路由参数
      */
     param: any;
+
+    /**
+     * 请求参数
+     */
+    query: any;
 
     /**
      * 设置 header
@@ -59,10 +58,19 @@ export interface BaseContext {
      * @param name header 名称
      */
     getHeader(name: string | any): any;
+
+    /**
+     * 挂载常用属性
+     */
+    redirect?: IResponse["redirect"],
+    body?: IResponse["body"],
+    type?: IResponse["type"],
+    status?: IResponse["status"],
+    headers?: IRequest["headers"],
+    url?: IRequest["url"]
 }
 
 export interface IContext extends Context, BaseContext {
     request: IRequest;
     response: IResponse;
-    query: any;
 }

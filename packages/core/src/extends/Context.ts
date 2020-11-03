@@ -2,51 +2,48 @@ import Uma from '../core/Uma.ts';
 import typeHelper from '../utils/typeHelper.ts';
 import { BaseContext, IContext } from '../types/IContext.ts';
 import LazyModules from '../loader/LazyModules.ts';
+import { send } from '../../../node-to-deno/koa.ts';
+import Delegator from '../../../node-to-deno/delegates.ts';
 
 export const Context: BaseContext = {
-    get req() {
-        return this.request;
-    },
-
-    get res() {
-        return this.response;
-    },
-
-    get request() {
-        return this.request;
-    },
-
-    get response() {
-        return this.response;
-    },
-
     sendData(val: string | ArrayBuffer, status?: number) {
-        if (status) this.response.status = status;
-        this.response.body = val;
+        if (status) this.status = status;
+        this.body = val;
     },
 
     json(data: Object) {
-        this.response.type = 'application/json';
-        this.response.body = data;
+        this.type = 'application/json';
+        this.body = data;
     },
 
     jsonp(data: Object, callbackField: string = 'callback') {
-        this.response.headers.set('X-Content-Type-Options', 'nosniff');
-        this.response.type = 'application/javascript';
-        // this.response.body = LazyModules.jsonpBody(data, callbackField, Uma.options.jsonpBody);
+        // this.set('X-Content-Type-Options', 'nosniff');
+        // this.type = 'application/javascript';
+        // this.body = LazyModules.jsonpBody(data, callbackField, Uma.options.jsonpBody);
     },
 
-    // view(viewPath: string, locals: any = {}) {
-    //     locals.ctx = this;
+    view(viewPath: string, locals: any = {}) {
+        locals.ctx = this;
 
-    //     return this.render(viewPath, locals);
-    // },
+        // @ts-ignore
+        return send(this, viewPath, locals);
+    },
 
-    // get userAgent() {
-        // return this.request.headers.get['user-agent'];
-    // },
+    get userAgent() {
+        // @ts-ignore
+        return this.headers?.get['user-agent'];
+    },
 
     param: {},
+
+    get query() {
+        let data:any = {};
+        // @ts-ignore
+        for (const [key, value] of this?.url?.searchParams) {
+            data[key] = value;
+        }
+        return data;
+    },
 
     setHeader(name: string | { [key: string]: string }, value?: string | string[]): void {
         // const ctx: IContext = this;
@@ -67,7 +64,7 @@ export const Context: BaseContext = {
     },
 
     getHeader(name: string | any): any {
-        return '';
-        // return this.request.headers.get[name];
+        // @ts-ignore
+        return this.headers?.get[name];
     },
 };
