@@ -1,8 +1,9 @@
 import { test, assert } from '../../../node-to-deno/test.ts';
 import path from '../../../node-to-deno/path.ts';
 import Require from '../../src/utils/Require.ts';
+import __dirname from '../../../node-to-deno/__dirname.ts';
 
-const baseDir = path.join(Deno.cwd(), '__tests__/__fixtures__/requireDefault');
+const baseDir = path.join(__dirname(import.meta), '__tests__/__fixtures__/requireDefault');
 
 test({
     name: 'default(p: string): any：should return default obj',

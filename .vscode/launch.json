@@ -9,8 +9,8 @@
             "request": "launch",
             "name": "Deno",
             "runtimeExecutable": "deno",
-            "runtimeArgs": ["run", "--inspect-brk", "-A", "__tests__/loader/ConfigLoader.test.ts"],
-            "cwd": "${workspaceFolder}/packages/core",
+            "runtimeArgs": ["run", "--inspect-brk", "-A", "src/app.ts"],
+            "cwd": "${workspaceFolder}/packages/app",
             "outputCapture": "std",
             "attachSimplePort": 9229
         }

@@ -1,8 +1,9 @@
 import { test, assert } from '../../../node-to-deno/test.ts';
 import path from '../../../node-to-deno/path.ts';
 import loadDir from '../../src/utils/loadDir.ts';
+import __dirname from '../../../node-to-deno/__dirname.ts';
 
-const baseDir = path.join(Deno.cwd(), '__tests__/__fixtures__/loadDir');
+const baseDir = path.join(__dirname(import.meta), '__tests__/__fixtures__/loadDir');
 
 test({
     name: 'loadDir(dirPath, loadFn, ignoreDirs)：load dir not exist should return void',

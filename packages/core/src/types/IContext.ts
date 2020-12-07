@@ -1,9 +1,9 @@
 import { Context } from '../../../node-to-deno/koa.ts';
 
-import { IRequest } from './IRequest.ts';
-import { IResponse } from './IResponse.ts';
+import { IRequest, ContextDelegatedRequest } from './IRequest.ts';
+import { IResponse, ContextDelegatedResponse } from './IResponse.ts';
 
-export interface BaseContext {
+export interface BaseContext extends ContextDelegatedRequest, ContextDelegatedResponse {
     /**
      * 发送内容
      * @param data 内容
@@ -59,18 +59,10 @@ export interface BaseContext {
      */
     getHeader(name: string | any): any;
 
-    /**
-     * 挂载常用属性
-     */
-    redirect?: IResponse["redirect"],
-    body?: IResponse["body"],
-    type?: IResponse["type"],
-    status?: IResponse["status"],
-    headers?: IRequest["headers"],
-    url?: IRequest["url"]
+    redirect(url: string, status?: string | undefined): any;
 }
 
-export interface IContext extends Context, BaseContext {
+export interface IContext extends BaseContext, Context {
     request: IRequest;
     response: IResponse;
 }

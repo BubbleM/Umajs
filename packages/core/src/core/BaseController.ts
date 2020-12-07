@@ -16,13 +16,13 @@ export class BaseController implements BaseContext {
         this.response = res;
     }
 
-    req!: IRequest;
+    req: IRequest;
 
-    res!: IResponse;
+    res: IResponse;
 
-    request!: IRequest;
+    request: IRequest;
 
-    response!: IResponse;
+    response: IResponse;
 
     set status(status: number) {
         this.ctx.response.status = status;

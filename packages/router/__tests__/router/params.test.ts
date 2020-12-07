@@ -1,17 +1,15 @@
-// import { start, stop, send } from '../__fixtures__/app/app';
+import { start, stop, send } from "../__fixtures__/app/app.ts";
+import { test, assertEquals } from "../../../node-to-deno/test.ts";
 
-// describe('test @Param && @Query', () => {
-//     beforeAll(async () => {
-//         await start();
-//     });
-
-//     afterAll(async () => {
-//         await stop();
-//     });
-
-//     // get
-//     it('params & query: get ===> index.params ===> /home/:name?title=xx', async () => {
-//         const index = await send('/home/username?title=hello');
-//         expect(index.text).toEqual('name=username, title=hello');
-//     });
-// });
+test({
+  name:
+    "test @Param && @Query：params & query: get ===> index.params ===> /home/:name?title=xx",
+  async fn() {
+    await start();
+    const index = await send("/home/username?title=hello");
+    assertEquals(index, "name=username, title=hello");
+    await stop();
+  },
+  sanitizeResources: false,
+  sanitizeOps: false,
+});

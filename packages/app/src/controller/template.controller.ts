@@ -29,6 +29,6 @@ export default class Template extends BaseController {
 
     @Path('/r')
     extendResult() {
-        // return Result.redirect2('/', 301);
+        return Result.redirect2('/', 301);
     }
 }

@@ -3,7 +3,6 @@ import typeHelper from '../utils/typeHelper.ts';
 import { BaseContext, IContext } from '../types/IContext.ts';
 import LazyModules from '../loader/LazyModules.ts';
 import { send } from '../../../node-to-deno/koa.ts';
-import Delegator from '../../../node-to-deno/delegates.ts';
 
 export const Context: BaseContext = {
     sendData(val: string | ArrayBuffer, status?: number) {
@@ -22,7 +21,7 @@ export const Context: BaseContext = {
         // this.body = LazyModules.jsonpBody(data, callbackField, Uma.options.jsonpBody);
     },
 
-    view(viewPath: string, locals: any = {}) {
+    view(viewPath: string, locals: any = {}):any {
         locals.ctx = this;
 
         // @ts-ignore
@@ -30,8 +29,7 @@ export const Context: BaseContext = {
     },
 
     get userAgent() {
-        // @ts-ignore
-        return this.headers?.get['user-agent'];
+        return this.headers['user-agent'];
     },
 
     param: {},
@@ -55,16 +53,19 @@ export const Context: BaseContext = {
         // }
 
         // if (typeHelper.isString(name) && value !== undefined) {
-            // ctx.response.headers.set(name, value);
+        //     ctx.response.headers.set(name, value);
         // }
 
         // if (typeHelper.isObject(name)) {
-            // ctx.set(name);
+        //     ctx.set(name);
         // }
     },
 
     getHeader(name: string | any): any {
-        // @ts-ignore
-        return this.headers?.get[name];
+        return this.headers[name];
     },
+
+    redirect(url: string, status?: string | undefined): any {
+        this.redirect(url, status);
+    }
 };

@@ -19,7 +19,7 @@
   },
   "scripts": {
     "koa": "ts-node-dev --respawn src/app.ts --koa",
-    "app": "ts-node-dev --respawn src/app.ts"
+    "app": "deno run --allow-read --allow-net -c tsconfig.json src/app.ts NODE_ENV=production"
   },
   "dependencies": {
     "@umajs/core": "^1.0.1",

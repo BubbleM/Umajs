@@ -1,12 +1,12 @@
 // import * as Koa from 'koa';
 import { Uma, TUmaOption } from '../../core/src/mod.ts';
 import { Router } from '../../router/src/index.ts';
-import { __ } from '../../node-to-deno/dirname.ts';
+import __dirname from '../../node-to-deno/__dirname.ts';
 
 const options: TUmaOption = {
     Router,
     // bodyParser: { multipart: true },
-    ROOT: __(import.meta).__dirname,
+    ROOT: __dirname(import.meta),
     configPath: '',
     env: 'development',
 };

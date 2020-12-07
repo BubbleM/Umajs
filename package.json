@@ -4,8 +4,8 @@
   "scripts": {
     "init": "del -f packages/*/node_modules && del -f packages/*/lib && lerna bootstrap",
     "commit": "npx git-cz",
-    "test:core": "jest ./packages/core/__tests__ --runInBand",
-    "test:router": "jest ./packages/router/__tests__ --runInBand --forceExit",
+    "test:core": "deno test --allow-read ./packages/core/__tests__",
+    "test:router": "deno test --allow-read --allow-net -c tsconfig.json ./packages/router/__tests__",
     "test:i18n": "jest ./packages/plugin-i18n/__tests__ --runInBand --forceExit",
     "test:session": "jest ./packages/plugin-session/__tests__ --runInBand --forceExit",
     "test": "npm run test:core && npm run test:router && npm run test:i18n && npm run test:session",

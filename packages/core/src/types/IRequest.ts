@@ -14,8 +14,28 @@ interface File {
     toJSON(): Object;
 }
 
-export interface BaseRequest {
+export interface ContextDelegatedRequest {
+    /**
+     * Return request header, alias as request.header
+     */
+    headers?: any;
+
+    /**
+     * Get/Set request URL.
+     */
+    url?: URL;
+
+    /**
+     * Get origin of URL.
+     */
+    origin?: string;
+
+    /**
+     * Get/Set request method.
+     */
+    method?: string;
 }
+export interface BaseRequest {}
 
 export interface IRequest extends Request, BaseRequest {
     ctx: IContext,

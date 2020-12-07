@@ -26,8 +26,8 @@ export interface TResultDownData extends SendOptions {
     [DOWNLOAD_PATH]: string
 }
 
-// export type TResultRedirectData = { url: typeof REDIRECT_BACK, alt?: string };
-export type TResultRedirectData = { url: any, alt?: string };
+// export type TResultRedirectData = { url: typeof REDIRECT_BACK, status?: string };
+export type TResultRedirectData = { url: any, status?: string };
 
 export interface IResults {
     done: (ctx: IContext, data: any) => void;

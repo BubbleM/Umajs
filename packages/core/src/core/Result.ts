@@ -7,14 +7,14 @@ export default class Result implements IResult {
     constructor({ type, data, status }: IResult) {
         this.type = type;
         this.data = data;
-        this.status = status;
+        this.status = status!;
     }
 
     type: TResultType;
 
     data: any;
 
-    status: number | undefined;
+    status: number;
 
     static done() {
         return new Result({

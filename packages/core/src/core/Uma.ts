@@ -1,62 +1,65 @@
-import { Koa, Middleware } from '../../../node-to-deno/koa.ts';
-import path from '../../../node-to-deno/path.ts';
-import process from '../../../node-to-deno/process.ts';
+import { Koa, Middleware } from "../../../node-to-deno/koa.ts";
+import path from "../../../node-to-deno/path.ts";
+import process from "../../../node-to-deno/process.ts";
 // import * as http from 'http';
 // import * as https from 'https';
 // import * as bodyParser from 'koa-body';
 
-import AspectLoader from '../loader/AspectLoader.ts';
-import ControllerLoader from '../loader/ControllerLoader.ts';
-import ServiceLoader from '../loader/ServiceLoader.ts';
-import ResourceLoader from '../loader/ResourceLoader.ts';
-import ConfigLoader from '../loader/ConfigLoader.ts';
-import PluginLoader from '../loader/PluginLoader.ts';
-import controllerInfo from '../info/controllerInfo.ts';
-// import { packageInfo } from '../info/packageInfo';
+import AspectLoader from "../loader/AspectLoader.ts";
+import ControllerLoader from "../loader/ControllerLoader.ts";
+import ServiceLoader from "../loader/ServiceLoader.ts";
+import ResourceLoader from "../loader/ResourceLoader.ts";
+import ConfigLoader from "../loader/ConfigLoader.ts";
+import PluginLoader from "../loader/PluginLoader.ts";
+import controllerInfo from "../info/controllerInfo.ts";
+import { packageInfo } from "../info/packageInfo.ts";
 
-import { Context } from '../extends/Context.ts';
-import { Request } from '../extends/Request.ts';
-import { Response } from '../extends/Response.ts';
-import typeHelper from '../utils/typeHelper.ts';
-import mixin from '../utils/mixin.ts';
-import { TUmaOption } from '../types/TUmaOption.ts';
-import { IContext } from '../types/IContext.ts';
-import { TConfig } from '../types/TConfig.ts';
-import { TControllerInfo } from '../types/TControllerInfo.ts';
-import { TPluginConfig } from '../types/TPluginConfig.ts';
-import { ISUmaOption, IUmaOption } from '../types/IUmaOption.ts';
-import Delegator from '../../../node-to-deno/delegates.ts';
+import { Context } from "../extends/Context.ts";
+import { Request } from "../extends/Request.ts";
+import { Response } from "../extends/Response.ts";
+import typeHelper from "../utils/typeHelper.ts";
+import mixin from "../utils/mixin.ts";
+import { TUmaOption } from "../types/TUmaOption.ts";
+import { IContext } from "../types/IContext.ts";
+import { TConfig } from "../types/TConfig.ts";
+import { TControllerInfo } from "../types/TControllerInfo.ts";
+import { TPluginConfig } from "../types/TPluginConfig.ts";
+import Delegator from "../../../node-to-deno/delegates.ts";
 
-let instance: Uma | null = null;
+let instance: Uma;
 
 export default class Uma {
-    private constructor(readonly option: IUmaOption) {
-        console.assert(option && option.ROOT !== undefined, `Uma options.ROOT must set value. e.g { ROOT: './src' }, now ${JSON.stringify(option)}`);
+    private constructor(readonly options: TUmaOption) {
+        console.assert(
+            options && options.ROOT !== undefined,
+            `Uma options.ROOT must set value. e.g { ROOT: './src' }, now ${JSON.stringify(
+                options
+            )}`
+        );
 
-        this.options = mixin(true, {
-            jsonpBody: {},
-            configPath: path.resolve(option.ROOT, 'config'),
-            env: process.env('NODE_ENV'),
-            strictDir: false,
-        }, option);
+        this.options = mixin(
+            true,
+            {
+                jsonpBody: {},
+                configPath: path.resolve(options.ROOT, "config"),
+                env: process.env.NODE_ENV,
+                strictDir: false,
+            },
+            options
+        );
 
-        const { env, proxy, subdomainOffset } = this.options;
-
-        if (proxy) this.app.proxy = proxy;
-        if (subdomainOffset) this.app.subdomainOffset = subdomainOffset;
-        this.env = env;
-        // process.env.NODE_ENV = this.env;
+        const { env } = this.options;
+        this.env = env!;
+        process.env.NODE_ENV = this.env!;
     }
 
     config!: TConfig;
 
-    env!: string|undefined;
+    env: string;
 
-    app: Koa|any = null;
+    app!: Koa;
 
-    options: ISUmaOption;
-
-    // server: http.Server | https.Server;
+    server!: any;
 
     routers: string[] = [];
 
@@ -81,51 +84,56 @@ export default class Uma {
     }
 
     async loadConfig() {
-        await ConfigLoader.loadConfigDir(this.options.configPath);
+        await ConfigLoader.loadConfigDir(this.options.configPath!);
         Object.freeze(ConfigLoader.config);
         this.config = ConfigLoader.config;
     }
 
     async loadAspect() {
-        await AspectLoader.loadAspectDir(path.resolve(this.options.ROOT, 'aspect'));
+        await AspectLoader.loadAspectDir(path.resolve(this.options.ROOT, "aspect"));
     }
 
     async loadResource() {
         // ['config', 'aspect', 'plugins'] reserved dir
-        const reservedDir = ['config', 'aspect', 'plugins'];
+        const reservedDir = ["config", "aspect", "plugins"];
 
         if (!this.options.strictDir) {
-            reservedDir.push('controller', 'service');
+            reservedDir.push("controller", "service");
         }
 
         await ResourceLoader.loadResourceDir(this.options.ROOT, reservedDir);
     }
 
     async loadService() {
-        await ServiceLoader.loadServiceDir(path.resolve(this.options.ROOT, 'service'));
+        await ServiceLoader.loadServiceDir(
+            path.resolve(this.options.ROOT, "service")
+        );
     }
 
     async loadController() {
-        await ControllerLoader.loadControllerDir(path.resolve(this.options.ROOT, 'controller'));
+        await ControllerLoader.loadControllerDir(
+            path.resolve(this.options.ROOT, "controller")
+        );
     }
 
     async loadPlugin() {
         // if (this.options.bodyParser) {
-            // this.app.use((ctx, next) => {
-            //     if (['POST', 'PUT', 'PATCH'].indexOf(ctx.method) > -1) {
-            //         const bodyParserOpts = mixin(false, { multipart: true }, this.options.bodyParser);
+        // this.app.use((ctx, next) => {
+        //     if (['POST', 'PUT', 'PATCH'].indexOf(ctx.method) > -1) {
+        //         const bodyParserOpts = mixin(false, { multipart: true }, this.options.bodyParser);
 
-            //         return Reflect.apply(bodyParser(bodyParserOpts), null, [ctx, next]);
-            //     }
+        //         return Reflect.apply(bodyParser(bodyParserOpts), null, [ctx, next]);
+        //     }
 
-            //     return next();
-            // });
+        //     return next();
+        // });
         // }
 
         await PluginLoader.loadDir(this.options.ROOT);
     }
 
     use(mw: Middleware<any, IContext>) {
+        // @ts-ignore
         this.app.use(mw);
     }
 
@@ -137,9 +145,14 @@ export default class Uma {
         if (!this.port) this.port = port;
         if (callback) this.callback = callback;
 
-        const { app, options: { createServer, Router, beforeLoad, afterLoaded } } = this;
+        const {
+            app,
+            options: { createServer, Router, beforeLoad, afterLoaded },
+        } = this;
 
-        if (typeHelper.isFunction(beforeLoad)) await Promise.resolve(Reflect.apply(beforeLoad, this, [this]));
+        if (typeHelper.isFunction(beforeLoad)) {
+            await Promise.resolve(Reflect.apply(beforeLoad, this, [this]));
+        }
 
         await this.load();
 
@@ -149,28 +162,33 @@ export default class Uma {
             mixin(false, ctx, Context);
 
             Delegator.create(ctx, ctx.response)
-                .method('redirect')
-                .access('status')
-                .access('body')
-                .access('type')
-            Delegator.create(ctx, ctx.request)
-                .getter('headers')
-                .getter('url')
+                .method("redirect")
+                .access("status")
+                .access("body")
+                .access("type");
+            Delegator.create(ctx, ctx.request).getter("headers").getter("url");
             return next();
         });
 
         this.use(Router());
 
-        if (typeHelper.isFunction(afterLoaded)) await Promise.resolve(Reflect.apply(afterLoaded, this, [this]));
+        if (typeHelper.isFunction(afterLoaded)) {
+            await Promise.resolve(Reflect.apply(afterLoaded, this, [this]));
+        }
 
         if (createServer) {
-            // console.assert(typeHelper.isFunction(createServer), 'config.createServer must be a function');
+            console.assert(
+                typeHelper.isFunction(createServer),
+                "config.createServer must be a function"
+            );
         }
 
         // const koaCallback = app.callback();
 
+        this.server = new AbortController();
+        const { signal } = this.server;
 
-        // this.server = createServer ? createServer(koaCallback) : app.add(koaCallback);
+        // this.server = createServer ? createServer(koaCallback) : http.createServer(koaCallback);
 
         // this.server.listen(this.port, async () => {
         //     console.log(`Uma server running at port: ${this.port} `);
@@ -181,11 +199,16 @@ export default class Uma {
         //     }
         // });
 
-        app.addEventListener('listen', () => {
-            console.log('Listening on:' + this.port);
+        app.addEventListener("listen", async () => {
+            console.log(`Uma server running at port: ${this.port} `);
+            console.log(`Uma version: ${packageInfo.version}`);
+
+            if (typeof this.callback === "function") {
+                await Promise.resolve(Reflect.apply(this.callback, this, []));
+            }
         });
 
-        await app.listen({port: this.port})
+        await app.listen({ port: this.port, signal });
     }
 
     static use(mw: Middleware<any, IContext>) {
@@ -200,15 +223,15 @@ export default class Uma {
         return Uma.instance().app;
     }
 
-    // static get server() {
-    //     return Uma.instance().server;
-    // }
+    static get server() {
+        return Uma.instance().server;
+    }
 
     static get options() {
         return Uma.instance().options;
     }
 
-    static get config():TConfig {
+    static get config(): TConfig {
         return ConfigLoader.config;
     }
 
@@ -259,6 +282,11 @@ export default class Uma {
 
         instance = new Uma(options);
         instance.app = new Koa();
+
+        const { proxy, subdomainOffset } = this.options;
+
+        if (proxy) instance.app.proxy = proxy;
+        if (subdomainOffset) instance.app.subdomainOffset = subdomainOffset;
 
         return instance;
     }

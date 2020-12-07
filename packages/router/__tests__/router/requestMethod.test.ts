@@ -1,22 +1,15 @@
-// import { start, stop, send, post } from '../__fixtures__/app/app';
+import { start, stop, send, post } from "../__fixtures__/app/app.ts";
+import { test, assertEquals } from "../../../node-to-deno/test.ts";
 
-
-// describe('test @RequestMethod', () => {
-//     beforeAll(async () => {
-//         await start();
-//     });
-
-//     afterAll(async () => {
-//         await stop();
-//     });
-
-//     it('only post @requestMethod: do post ===> index.onlyGet ===> /index/onlyGet', async () => {
-//         const index = await post('/index/onlyGet');
-//         expect(index.text).toEqual('this method only can post');
-//     });
-
-//     it('only post @requestMethod: do get ===> index.onlyGet ===> /index/onlyGet', async () => {
-//         const index = await send('/index/onlyGet');
-//         expect(index.text).toEqual('Not Found');
-//     });
-// });
+test({
+  name:
+    "test @RequestMethod: only post @requestMethod: do post ===> index.onlyGet ===> /index/onlyGet",
+  async fn() {
+    await start();
+    const index = await post("/index/onlyGet");
+    assertEquals(index, "this method only can post");
+    await stop();
+  },
+  sanitizeResources: false,
+  sanitizeOps: false,
+});

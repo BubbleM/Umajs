@@ -1,44 +1,52 @@
-import path from '../../../../node-to-deno/path.ts';
-// import * as request from 'supertest';
-import { Uma, IResponse } from '../../../../core/src/mod.ts';
-import { __ } from '../../../../node-to-deno/dirname.ts';
-
-import { Router } from '../../../src/index.ts';
+import path from "../../../../node-to-deno/path.ts";
+import { Uma } from "../../../../core/src/mod.ts";
+import __dirname from "../../../../node-to-deno/__dirname.ts";
+import { Router } from "../../../src/index.ts";
 
 const uma = Uma.instance({
-    Router,
-    ROOT: path.join(__(import.meta).__dirname, '../app'),
+  Router,
+  ROOT: path.join(__dirname(import.meta), "../app"),
+});
+const port = 8053;
+
+export const start = () => new Promise((resolve, reject) => {
+  uma.start(port, (e: any) => {
+    if (e) return reject();
+    resolve();
+  });
 });
 
-// export const start = () => new Promise((resolve, reject) => {
-//     uma.start(8053, (e) => {
-//         if (e) return reject();
-//         resolve();
-//     });
-// });
+export const stop = () => new Promise((resolve, reject) => {
+  uma.server.abort();
+  resolve();
+  // uma.server.close((e: any) => {
+  //   if (e) return reject();
+  //   resolve();
+  // });
+});
 
-// export const stop = () => new Promise((resolve, reject) => {
-//     uma.server.close((e) => {
-//         if (e) return reject();
-//         resolve();
-//     });
-// });
+export const send = (path: string): any => new Promise((resolve, reject) => {
+  fetch(`http://localhost:${port}${path}`).then((response) => {
+    return response.text();
+  }).then((jsonData) => {
+    resolve(jsonData !== "" ? jsonData : "Not Found");
+  }).catch((err) => {
+    reject(err);
+  });
+});
 
-// export const send = (path: string): any => new Promise((resolve, reject) => {
-//     request(uma.app.callback())
-//         .get(path)
-//         .end((err: Error, res: IResponse) => {
-//             if (err) reject(err);
-//             resolve(res);
-//         });
-// });
-
-// export const post = (path: string, data?: Object): any => new Promise((resolve, reject) => {
-//     request(uma.app.callback())
-//         .post(path)
-//         .send(data)
-//         .end((err: Error, res: Response) => {
-//             if (err) reject(err);
-//             resolve(res);
-//         });
-// });
+export const post = (path: string, data?: any): any => new Promise((resolve, reject) => {
+  fetch(`http://localhost:${port}${path}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: data,
+  }).then((response) => {
+    return response.text();
+  }).then((jsonData) => {
+    resolve(jsonData);
+  }).catch((err) => {
+    reject(err);
+  });
+});

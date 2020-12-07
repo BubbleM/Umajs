@@ -1,10 +1,14 @@
-import { pathToRegexp, Key } from '../../node-to-deno/path-to-regexp.ts';
-import Uma, { TMethodInfo } from '../../core/src/mod.ts';
-import { TPathInfo } from './types/TPathInfo.ts';
-import router, { StaticRouterMap, RegexpRouterMap, ClazzMap } from './router.ts';
+import { pathToRegexp, Key } from "../../node-to-deno/path-to-regexp.ts";
+import Uma, { TMethodInfo } from "../../core/src/mod.ts";
+import { TPathInfo } from "./types/TPathInfo.ts";
+import router, {
+    StaticRouterMap,
+    RegexpRouterMap,
+    ClazzMap,
+} from "./router.ts";
 
 export const Router = () => {
-    console.log('======Init router start======');
+    console.log("======Init router start======");
 
     const ALLROUTE: string[] = [];
 
@@ -14,14 +18,20 @@ export const Router = () => {
 
     // go through contollerInfo，and init each router map
     for (const c of Uma.controllersInfo) {
-        const { name: clazzName, path: rootPath = '', clazz } = c;
+        const { name: clazzName, path: rootPath = "", clazz } = c;
         const methodMap: Map<string, TMethodInfo> = c.methodMap || new Map();
 
-        const decoratorMethodNameArr: (string | undefined)[] = [...methodMap.values()].map((m) => m.name);
-        const methodNameArr: (string | number | symbol)[] = Reflect.ownKeys(clazz?.prototype)
-            .filter((name) => name !== 'constructor'
-            && !decoratorMethodNameArr.includes(String(name))
-            && typeof clazz?.prototype[`${String(name)}`] === 'function');
+        const decoratorMethodNameArr: (string | undefined)[] = [
+            ...methodMap.values(),
+        ].map((m) => m.name);
+        const methodNameArr: (string | number | symbol)[] = Reflect.ownKeys(
+            clazz?.prototype
+        ).filter(
+            (name) =>
+                name !== "constructor" &&
+                !decoratorMethodNameArr.includes(String(name)) &&
+                typeof clazz?.prototype[`${String(name)}`] === "function"
+        );
 
         // 记录没有被修饰过的路由 默认路由 controller/method
         methodNameArr.forEach((methodName) => {
@@ -30,7 +40,7 @@ export const Router = () => {
 
         // 主要是对被@Path修饰过的路由进行处理
         for (const m of methodMap.values()) {
-            const { name: methodName = '', path: methodPath = [] } = m;
+            const { name: methodName = "", path: methodPath = [] } = m;
             const pathInfo: TPathInfo = { methodName, ...c };
 
             methodPath.forEach((p) => {
@@ -42,14 +52,16 @@ export const Router = () => {
                     ALLROUTE.push(routePath);
                 } else {
                     // 注册路由重复
-                    console.error(`${routePath} ==> ${clazzName}.${methodName} has been registered. 
-                    Recommended use the Path decorator to annotate the ${clazzName}.controller.ts`);
+                    console.error(
+                        `${routePath} ==> ${clazzName}.${methodName} has been registered. 
+                    Recommended use the Path decorator to annotate the ${clazzName}.controller.ts`
+                    );
 
                     return;
                 }
 
                 // 如果method设置的Path中有:/(被认定为正则匹配路由，否则为静态路由
-                if (p.indexOf(':') > -1 || p.indexOf('(') > -1) {
+                if (p.indexOf(":") > -1 || p.indexOf("(") > -1) {
                     const keys: Key[] = [];
                     const pathReg = pathToRegexp(routePath, keys);
 
@@ -64,7 +76,7 @@ export const Router = () => {
         ClazzMap.set(clazzName!, c);
     }
 
-    console.log('======Init router end======');
+    console.log("======Init router end======");
 
     const uma = Uma.instance();
 

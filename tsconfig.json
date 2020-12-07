@@ -1,8 +1,10 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        // "module": "commonjs",
         "target": "es6",
-        "experimentalDecorators": true,
-        "downlevelIteration": true
+        // "experimentalDecorators": true,
+        // "downlevelIteration": true,
+        "strictPropertyInitialization": false,
+        "experimentalDecorators": true
     }
 }
